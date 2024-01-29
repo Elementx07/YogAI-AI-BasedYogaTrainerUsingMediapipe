@@ -18,5 +18,9 @@
         android:layout_height="match_parent"
         android:id="@+id/overlay" />
 
+    <com.yogai.attempt5.TextOverlay
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/text"/>
 
 </FrameLayout>
