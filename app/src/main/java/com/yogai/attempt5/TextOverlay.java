@@ -1,13 +1,17 @@
 package com.yogai.attempt5;
 
+import static androidx.camera.core.impl.utils.ContextUtil.getApplicationContext;
 import static java.lang.Math.atan2;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.speech.tts.TextToSpeech;
 import android.util.AttributeSet;
+import android.view.SoundEffectConstants;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -17,26 +21,40 @@ import com.google.mediapipe.tasks.components.containers.NormalizedLandmark;
 import com.google.mediapipe.tasks.vision.core.RunningMode;
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult;
 
+import org.jetbrains.annotations.TestOnly;
+
 import java.util.Locale;
 
 public class TextOverlay extends View {
+    @SuppressLint("RestrictedApi")
     public TextOverlay(Context context, AttributeSet attrs) {
         super(context,attrs);
         initPaints();
+        t1 = new TextToSpeech(getApplicationContext(context), new TextToSpeech.OnInitListener() {
+                    @Override
+                    public void onInit(int status) {
+                        if(status != TextToSpeech.ERROR) {
+                            t1.setLanguage(Locale.UK);
+                        }
+                    }
+                });
     }
 
     private PoseLandmarkerResult results;
     private Paint pointPaint2;
 
+    private int previousState=1;
+
     private float scaleFactor = 1f;
     private int imageWidth = 1;
     private int imageHeight = 1;
+    private TextToSpeech t1;
+    private MainViewModel viewModel = new MainViewModel();
 
 
     public void clear() {
         results = null;
         pointPaint2.reset();
-
         invalidate();
         initPaints();
     }
@@ -68,15 +86,27 @@ public class TextOverlay extends View {
 
             Float visibleHand = results.landmarks().get(0).get(13).visibility().get();
             if (visibleHand > 0.5) {
+
+                boolean previousHandState = viewModel.isHandCurled();
+
                 String hipAngleText =
                         String.format(Locale.US, "hip Angle: %.2f degrees", hipAngle);
                 canvas.drawText(hipAngleText, 20f, 370f, pointPaint2);
                 if (hipAngle > 130 && hipAngle < 270) {
                     if (angle > 90 && angle < 210) {
-                        //play a sound when hand is curled
+                        boolean currentHandState = true;
+                        if (previousHandState != currentHandState) {
+                            t1.speak("your Hand is curled", TextToSpeech.QUEUE_FLUSH, null);
+                            viewModel.setHandCurled(true);
+                        }
                         String straighthand = String.format(Locale.US, "Hand is curled");
                         canvas.drawText(straighthand, 20f, 120f, pointPaint2);
                     } else if (angle > 300) {
+                        boolean currentHandState = false;
+                        if (previousHandState != currentHandState) {
+                            t1.speak("your Hand is straight", TextToSpeech.QUEUE_FLUSH, null);
+                            viewModel.setHandCurled(false);
+                        }
                         canvas.drawText("hand is straight", 20f, 120f, pointPaint2);
                     }
                 }
@@ -110,7 +140,6 @@ public class TextOverlay extends View {
         scaleFactor = runningMode == RunningMode.LIVE_STREAM
                 ? Math.max(getWidth() * 1f / imageWidth, getHeight() * 1f / imageHeight)
                 : Math.min(getWidth() * 1f / imageWidth, getHeight() * 1f / imageHeight);
-
         invalidate();
     }
 }

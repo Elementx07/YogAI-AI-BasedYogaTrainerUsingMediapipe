@@ -22,6 +22,8 @@ import androidx.lifecycle.ViewModel
  */
 class MainViewModel : ViewModel() {
 
+
+
     private var _model = PoseLandmarkerHelper.MODEL_POSE_LANDMARKER_FULL
     private var _delegate: Int = PoseLandmarkerHelper.DELEGATE_CPU
     private var _minPoseDetectionConfidence: Float =
@@ -30,6 +32,8 @@ class MainViewModel : ViewModel() {
         .DEFAULT_POSE_TRACKING_CONFIDENCE
     private var _minPosePresenceConfidence: Float = PoseLandmarkerHelper
         .DEFAULT_POSE_PRESENCE_CONFIDENCE
+    private var _isHandCurled: Boolean = false;
+
 
     val currentDelegate: Int get() = _delegate
     val currentModel: Int get() = _model
@@ -43,8 +47,16 @@ class MainViewModel : ViewModel() {
         get() =
             _minPosePresenceConfidence
 
+    val isHandCurled: Boolean
+        get()
+            =_isHandCurled
+
     fun setDelegate(delegate: Int) {
         _delegate = delegate
+    }
+
+    fun setHandCurled(isHandCurled: Boolean) {
+        _isHandCurled = isHandCurled
     }
 
     fun setMinPoseDetectionConfidence(confidence: Float) {
