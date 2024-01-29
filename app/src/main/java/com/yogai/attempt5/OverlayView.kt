@@ -47,7 +47,6 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
 
     init {
         initPaints()
-
     }
     fun clear() {
         results = null
