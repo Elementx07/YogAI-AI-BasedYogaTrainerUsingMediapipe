@@ -22,32 +22,30 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.Toast
-import androidx.camera.core.Preview
+import androidx.camera.core.AspectRatio
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import androidx.camera.core.Camera
-import androidx.camera.core.AspectRatio
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation
-import com.yogai.attempt5.databinding.FragmentCameraBinding
 import com.google.mediapipe.tasks.vision.core.RunningMode
-import java.util.Locale
+import com.yogai.attempt5.databinding.FragmentCameraBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 
-class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
+class CameraFragment() : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
 
     companion object {
         private const val TAG = "Pose Landmarker"
     }
+
 
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
 
@@ -55,12 +53,13 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         get() = _fragmentCameraBinding!!
 
     private lateinit var poseLandmarkerHelper: PoseLandmarkerHelper
-    private val viewModel: MainViewModel by activityViewModels()
+    private var viewModel: MainViewModel?=null
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
     private var camera: Camera? = null
     private var cameraProvider: ProcessCameraProvider? = null
-    private var cameraFacing = CameraSelector.LENS_FACING_FRONT
+    private var cameraFacing = CameraSelector.LENS_FACING_BACK
+    var selectedPoseId: Int = viewModel?.getSelectedPoseId() ?: 0
 
 
     /** Blocking ML operations are performed using this executor */
@@ -68,17 +67,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
 
     override fun onResume() {
         super.onResume()
-        // Make sure that all permissions are still present, since the
-        // user could have removed them while the app was in paused state.
-
-//        if (!PermissionsFragment.hasPermissions(requireContext())) {
-//            Navigation.findNavController(
-//                requireActivity(), R.id.fragment_container
-//            ).navigate(R.id.action_camera_to_permissions)
-//        }
-
-        // Start the PoseLandmarkerHelper again when users come back
-        // to the foreground.
+        Log.e(TAG, "onResume camera: ")
         backgroundExecutor.execute {
             if(this::poseLandmarkerHelper.isInitialized) {
                 if (poseLandmarkerHelper.isClose()) {
@@ -88,13 +77,14 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         }
     }
 
+
     override fun onPause() {
         super.onPause()
         if(this::poseLandmarkerHelper.isInitialized) {
-            viewModel.setMinPoseDetectionConfidence(poseLandmarkerHelper.minPoseDetectionConfidence)
-            viewModel.setMinPoseTrackingConfidence(poseLandmarkerHelper.minPoseTrackingConfidence)
-            viewModel.setMinPosePresenceConfidence(poseLandmarkerHelper.minPosePresenceConfidence)
-            viewModel.setDelegate(poseLandmarkerHelper.currentDelegate)
+            viewModel?.setMinPoseDetectionConfidence(poseLandmarkerHelper.minPoseDetectionConfidence)
+            viewModel?.setMinPoseTrackingConfidence(poseLandmarkerHelper.minPoseTrackingConfidence)
+            viewModel?.setMinPosePresenceConfidence(poseLandmarkerHelper.minPosePresenceConfidence)
+            viewModel?.setDelegate(poseLandmarkerHelper.currentDelegate)
 
             // Close the PoseLandmarkerHelper and release resources
             backgroundExecutor.execute { poseLandmarkerHelper.clearPoseLandmarker() }
@@ -119,13 +109,17 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     ): View {
         _fragmentCameraBinding =
             FragmentCameraBinding.inflate(inflater, container, false)
-
+        Log.e(TAG, "onCreateView camera: ")
         return fragmentCameraBinding.root
     }
 
     @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.e(TAG, "onViewCreated camera: ")
+
+        // Access the ViewModel in onViewCreated
+        viewModel = activityViewModels<MainViewModel>().value
 
         // Initialize our background executor
         backgroundExecutor = Executors.newSingleThreadExecutor()
@@ -141,10 +135,10 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
             poseLandmarkerHelper = PoseLandmarkerHelper(
                 context = requireContext(),
                 runningMode = RunningMode.LIVE_STREAM,
-                minPoseDetectionConfidence = viewModel.currentMinPoseDetectionConfidence,
-                minPoseTrackingConfidence = viewModel.currentMinPoseTrackingConfidence,
-                minPosePresenceConfidence = viewModel.currentMinPosePresenceConfidence,
-                currentDelegate = viewModel.currentDelegate,
+                minPoseDetectionConfidence = viewModel!!.currentMinPoseDetectionConfidence,
+                minPoseTrackingConfidence = viewModel!!.currentMinPoseTrackingConfidence,
+                minPosePresenceConfidence = viewModel!!.currentMinPosePresenceConfidence,
+                currentDelegate = viewModel!!.currentDelegate,
                 poseLandmarkerHelperListener = this
             )
         }
@@ -255,7 +249,6 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                     resultBundle.inputImageWidth,
                     RunningMode.LIVE_STREAM
                 )
-
                 // Force a redraw
                 fragmentCameraBinding.overlay.invalidate()
             }

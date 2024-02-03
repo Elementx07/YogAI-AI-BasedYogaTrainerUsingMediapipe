@@ -22,7 +22,18 @@ import androidx.lifecycle.ViewModel
  */
 class MainViewModel : ViewModel() {
 
+    public val poseList: MutableList<Pose> = mutableListOf()
 
+    init {
+        // Initialize your poseList with Pose objects
+        poseList.add(Pose(R.drawable.tree, "Tree Pose"))
+        poseList.add(Pose(R.drawable.downwarddog, "Downward Dog"))
+        // Add more poses as needed
+    }
+
+    fun getPoses(): List<Pose> {
+        return poseList
+    }
 
     private var _model = PoseLandmarkerHelper.MODEL_POSE_LANDMARKER_FULL
     private var _delegate: Int = PoseLandmarkerHelper.DELEGATE_CPU
@@ -33,8 +44,9 @@ class MainViewModel : ViewModel() {
     private var _minPosePresenceConfidence: Float = PoseLandmarkerHelper
         .DEFAULT_POSE_PRESENCE_CONFIDENCE
     private var _isHandCurled: Boolean = false;
-
-
+    private var _selectedPoseId: Int = 0
+    private var _selectedPoseName: String? = null
+    private var _isHandUp: Boolean = false
     val currentDelegate: Int get() = _delegate
     val currentModel: Int get() = _model
     val currentMinPoseDetectionConfidence: Float
@@ -51,12 +63,38 @@ class MainViewModel : ViewModel() {
         get()
             =_isHandCurled
 
+    val isHandUp: Boolean
+        get()
+        =_isHandUp
+
+//    val selectedPoseName: String?
+//        get() = _selectedPoseName
+    fun setSelectedPoseName(poseName: String) {
+        _selectedPoseName = poseName
+    }
+
+    fun getSelectedPoseId(): Int {
+        return _selectedPoseId
+    }
+
+    fun getSelectedPose(): Pose {
+        return poseList[_selectedPoseId]
+    }
+
+    fun setSelectedPoseId(id: Int) {
+        _selectedPoseId = id
+    }
+
     fun setDelegate(delegate: Int) {
         _delegate = delegate
     }
 
     fun setHandCurled(isHandCurled: Boolean) {
         _isHandCurled = isHandCurled
+    }
+
+    fun setHandUp(isHandUp: Boolean) {
+        _isHandUp = isHandUp
     }
 
     fun setMinPoseDetectionConfidence(confidence: Float) {
@@ -74,4 +112,10 @@ class MainViewModel : ViewModel() {
     fun setModel(model: Int) {
         _model = model
     }
+
+    fun getSelectedPoseName(): String? {
+        return poseList[_selectedPoseId].poseName
+    }
+
+
 }

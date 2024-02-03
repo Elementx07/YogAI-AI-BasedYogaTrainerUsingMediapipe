@@ -22,6 +22,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.google.mediapipe.tasks.vision.core.RunningMode
@@ -43,6 +44,9 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
     private var scaleFactor: Float = 1f
     private var imageWidth: Int = 1
     private var imageHeight: Int = 1
+
+    private var viewModel: MainViewModel?= MainViewModel()
+    val pc = PoseClassifier(this.context)
 
 
     init {
@@ -68,35 +72,9 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
         pointPaint.style = Paint.Style.FILL
     }
 
-//    override fun draw(canvas: Canvas) {
-//        super.draw(canvas)
-//        results?.let { poseLandmarkerResult ->
-//            for(landmark in poseLandmarkerResult.landmarks()) {
-//                for(normalizedLandmark in landmark) {
-//                    canvas.drawPoint(
-//                        normalizedLandmark.x() * imageWidth * scaleFactor,
-//                        normalizedLandmark.y() * imageHeight * scaleFactor,
-//                        pointPaint
-//                    )
-//                }
-//
-//                PoseLandmarker.POSE_LANDMARKS.forEach {
-//                    canvas.drawLine(
-//                        poseLandmarkerResult.landmarks().get(0).get(it!!.start()).x() * imageWidth * scaleFactor,
-//                        poseLandmarkerResult.landmarks().get(0).get(it.start()).y() * imageHeight * scaleFactor,
-//                        poseLandmarkerResult.landmarks().get(0).get(it.end()).x() * imageWidth * scaleFactor,
-//                        poseLandmarkerResult.landmarks().get(0).get(it.end()).y() * imageHeight * scaleFactor,
-//                        linePaint)
-//                }
-//            }
-//        }
-//    }
-
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
         results?.let { poseLandmarkerResult ->
-
-
             for (landmark in poseLandmarkerResult.landmarks()) {
                 for (normalizedLandmark in landmark) {
                     // Invert Y-coordinate
@@ -119,9 +97,12 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
 
                     canvas.drawLine(startX, startY, endX, endY, linePaint)
                 }
-
-
             }
+            //retrieve the selected pose name from the view model
+            val selectedPose = viewModel?.getSelectedPoseName()
+            if(selectedPose != null)
+                pc.classifyPose(poseLandmarkerResult, selectedPose);
+            //Log.e(null, "draw: pose is null", )
         }
     }
 
