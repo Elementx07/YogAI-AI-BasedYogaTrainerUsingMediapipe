@@ -32,7 +32,6 @@ public class PoseClassifier {
 
     private TextToSpeech t1;
 
-    private long handUpTime=0;
 
     private boolean isRunning = false;
     private int seconds = 0;
@@ -106,34 +105,23 @@ public class PoseClassifier {
         Double shoulderAngle = calculateAngle(elbow, shoulder, hip);
         Float visibleHand = results.landmarks().get(0).get(13).visibility().get();
 
-        if (visibleHand > 0.5) {
-            boolean previousHandState = viewModel.isHandCurled();
-            if (shoulderAngle > 130 && shoulderAngle < 270) {
-                if (elbowAngle > 90 && elbowAngle < 210) {
-                    boolean currentHandState = true;
-                    if (previousHandState != currentHandState) {
-                        t1.speak("your Hand is curled", TextToSpeech.QUEUE_ADD, null);
-                        viewModel.setHandCurled(true);
-                        startTimer();
-                    }
-                    else {
-                        String time=updateTimerText();
-
-                        //Log.e(null, time );
-                    }
-                } else if (elbowAngle > 300) {
-                    boolean currentHandState = false;
-                    if (previousHandState != currentHandState) {
-                        t1.speak("your Hand is straight", TextToSpeech.QUEUE_ADD, null);
-                        viewModel.setHandCurled(false);
-                        stopTimer();
-                        resetTimer();
-                    }
-                }
+        Log.e(null, ""+viewModel.isHandUp() );
+        if (visibleHand > 0.5)
+        {
+            if (shoulderAngle > 190 && elbowAngle > 300 && elbowAngle<360 && shoulderAngle<210 && !viewModel.isHandUp())
+            {
+                t1.speak("your Hand is up", TextToSpeech.QUEUE_ADD, null);
+                viewModel.setHandUp(true);
+                startTimer();
             }
-            else {
-                viewModel.setHandCurled(false);
-                Log.d(null, "tree: nothing");
+            else if(viewModel.isHandUp() && shoulderAngle < 190)
+            {
+                viewModel.setHandUp(false);
+                stopTimer();
+                resetTimer();
+            }
+            else if(viewModel.isHandUp() && elbowAngle <300){
+                viewModel.setHandUp(false);
                 stopTimer();
                 resetTimer();
             }
