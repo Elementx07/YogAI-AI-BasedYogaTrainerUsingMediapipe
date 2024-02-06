@@ -110,7 +110,7 @@ public class TextOverlay extends View {
                         }
                         else {
                             String time=updateTimerText();
-                            //t1.speak(time,TextToSpeech.QUEUE_FLUSH,null);
+                            t1.speak(time,TextToSpeech.QUEUE_FLUSH,null);
                             //Log.e(null, time );
                             canvas.drawText(time, 20f, 570f, pointPaint2);
 
