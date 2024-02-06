@@ -6,7 +6,9 @@ import static java.lang.Math.atan2;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PointF;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.View;
 
@@ -31,6 +33,12 @@ public class PoseClassifier {
     private TextToSpeech t1;
 
     private long handUpTime=0;
+
+    private boolean isRunning = false;
+    private int seconds = 0;
+
+    private Handler handler = new Handler();
+    private Runnable runnable;
 
     @SuppressLint("RestrictedApi")
     public PoseClassifier(Context context) {
@@ -63,9 +71,9 @@ public class PoseClassifier {
     public int classifyPose(PoseLandmarkerResult results,String selectedPose) {
         if(results != null && results.landmarks().size() > 0) {
             switch (selectedPose) {
-                case "Tree Pose":
+                case "Lotus":
                     tree(results);
-                case "downwarddog":
+                case "Cobra":
                     downwarddog();
                 default:
                     return 0;
@@ -94,35 +102,41 @@ public class PoseClassifier {
         PointF shoulder = getLandmarkPosition(results, 15);
         PointF hip = getLandmarkPosition(results, 23);
 
-        Double angle = calculateAngle(wrist, elbow, shoulder);
-        Double hipAngle = calculateAngle(elbow, shoulder, hip);
+        Double elbowAngle = calculateAngle(wrist, elbow, shoulder);
+        Double shoulderAngle = calculateAngle(elbow, shoulder, hip);
         Float visibleHand = results.landmarks().get(0).get(13).visibility().get();
 
-
         if (visibleHand > 0.5) {
-            Long currentTime= System.currentTimeMillis();
-
-            boolean previousHandState = viewModel.isHandUp();
-                if (hipAngle> 190) {
+            boolean previousHandState = viewModel.isHandCurled();
+            if (shoulderAngle > 130 && shoulderAngle < 270) {
+                if (elbowAngle > 90 && elbowAngle < 210) {
                     boolean currentHandState = true;
-                    if (!previousHandState) {
-                        //t1.speak("your Hand is up", TextToSpeech.QUEUE_FLUSH, null);
-                        handUpTime = currentTime;
+                    if (previousHandState != currentHandState) {
+                        t1.speak("your Hand is curled", TextToSpeech.QUEUE_ADD, null);
+                        viewModel.setHandCurled(true);
+                        startTimer();
                     }
                     else {
-                        long elapsedTime= currentTime - handUpTime;
-                        long seconds=elapsedTime/1000;
-                        String time=""+seconds;
-                        //t1.speak(time,TextToSpeech.QUEUE_FLUSH,null);
-                        Log.e(null, time );
+                        String time=updateTimerText();
 
+                        //Log.e(null, time );
                     }
-                } else if (hipAngle < 180) {
+                } else if (elbowAngle > 300) {
                     boolean currentHandState = false;
                     if (previousHandState != currentHandState) {
-                        t1.speak("your Hand is down", TextToSpeech.QUEUE_FLUSH, null);
+                        t1.speak("your Hand is straight", TextToSpeech.QUEUE_ADD, null);
+                        viewModel.setHandCurled(false);
+                        stopTimer();
+                        resetTimer();
                     }
                 }
+            }
+            else {
+                viewModel.setHandCurled(false);
+                Log.d(null, "tree: nothing");
+                stopTimer();
+                resetTimer();
+            }
         }
         return 0;
     }
@@ -135,5 +149,40 @@ public class PoseClassifier {
         return 0;
     }
 
+    private void startTimer() {
+        if (!isRunning) {
+            isRunning = true;
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                    seconds++;
+                    String time=updateTimerText();
+                    t1.speak(time,TextToSpeech.QUEUE_ADD,null);
+                    handler.postDelayed(this, 1000); // Update every 1 second
+                }
+            };
+            handler.postDelayed(runnable, 1000);
+        }
+    }
 
+    private String updateTimerText() {
+        int minutes = seconds / 60;
+        int remainingSeconds = seconds % 60;
+
+        //String time = String.format("%02d:%02d", minutes, remainingSeconds);
+        return ""+remainingSeconds;
+
+    }
+
+    private void stopTimer() {
+        if (isRunning) {
+            isRunning = false;
+            handler.removeCallbacks(runnable);
+        }
+    }
+
+    private void resetTimer() {
+        seconds = 0;
+        updateTimerText();
+    }
 }

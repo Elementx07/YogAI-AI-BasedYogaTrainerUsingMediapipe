@@ -55,11 +55,7 @@ public class TextOverlay extends View {
 
     private long handUpTime=0;
 
-    private boolean isRunning = false;
-    private int seconds = 0;
 
-    private Handler handler = new Handler();
-    private Runnable runnable;
 
     public void clear() {
         results = null;
@@ -87,51 +83,19 @@ public class TextOverlay extends View {
             PointF shoulder = getLandmarkPosition(results, 15);
             PointF hip = getLandmarkPosition(results, 23);
 
-            Double angle = calculateAngle(wrist, elbow, shoulder);
-            Double hipAngle = calculateAngle(elbow, shoulder, hip);
+            Double elbow_angle = calculateAngle(wrist, elbow, shoulder);
+            Double shoulder_angle = calculateAngle(elbow, shoulder, hip);
             Paint pointPaint2 = new Paint();
             pointPaint2.setTextSize(90f);
 
 
-            Float visibleHand = results.landmarks().get(0).get(13).visibility().get();
-            if (visibleHand > 0.5) {
-                boolean previousHandState = viewModel.isHandCurled();
 
-                String hipAngleText =
-                        String.format(Locale.US, "hip Angle: %.2f degrees", hipAngle);
-                canvas.drawText(hipAngleText, 20f, 370f, pointPaint2);
-                if (hipAngle > 130 && hipAngle < 270) {
-                    if (angle > 90 && angle < 210) {
-                        boolean currentHandState = true;
-                        if (previousHandState != currentHandState) {
-                            t1.speak("your Hand is curled", TextToSpeech.QUEUE_FLUSH, null);
-                            viewModel.setHandCurled(true);
-                            startTimer();
-                        }
-                        else {
-                            String time=updateTimerText();
-                            t1.speak(time,TextToSpeech.QUEUE_FLUSH,null);
-                            //Log.e(null, time );
-                            canvas.drawText(time, 20f, 570f, pointPaint2);
-
-                        }
-                        String straighthand = String.format(Locale.US, "Hand is curled");
-                        canvas.drawText(straighthand, 20f, 120f, pointPaint2);
-                    } else if (angle > 300) {
-                        boolean currentHandState = false;
-                        if (previousHandState != currentHandState) {
-                            t1.speak("your Hand is straight", TextToSpeech.QUEUE_FLUSH, null);
-                            viewModel.setHandCurled(false);
-                            stopTimer();
-                            resetTimer();
-                        }
-                        canvas.drawText("hand is straight", 20f, 120f, pointPaint2);
-                    }
-                }
-            }
             // Draw the angle on the canvas
-            String angleText = String.format(Locale.US, "Angle: %.2f degrees", angle);
-            canvas.drawText(angleText, 20f, 60f, pointPaint2);
+            String elbow_angle_text = String.format(Locale.US, "Elbow Angle: %.2f degrees", elbow_angle);
+            canvas.drawText(elbow_angle_text, 20f, 80f, pointPaint2);
+
+            String shoulder_angle_text = String.format(Locale.US, "Shoulder Angle: %.2f degrees", shoulder_angle);
+            canvas.drawText(shoulder_angle_text, 20f, 240f, pointPaint2);
         }
     }
 
@@ -161,41 +125,6 @@ public class TextOverlay extends View {
         invalidate();
     }
 
-    private void startTimer() {
-        if (!isRunning) {
-            isRunning = true;
 
-            runnable = new Runnable() {
-                @Override
-                public void run() {
-                    seconds++;
-
-                    handler.postDelayed(this, 1000); // Update every 1 second
-                }
-            };
-
-            handler.postDelayed(runnable, 1000);
-        }
-    }
-
-    private String updateTimerText() {
-        int minutes = seconds / 60;
-        int remainingSeconds = seconds % 60;
-
-        String time = String.format("%02d:%02d", minutes, remainingSeconds);
-        return time;
-    }
-
-    private void stopTimer() {
-        if (isRunning) {
-            isRunning = false;
-            handler.removeCallbacks(runnable);
-        }
-    }
-
-    private void resetTimer() {
-        seconds = 0;
-        updateTimerText();
-    }
 
 }

@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/idPoseImage"
             android:layout_marginTop="8dp"
-            android:text="Downward Dog"
+            android:text="Lotus"
             android:textAlignment="center"
             android:fontFamily="@font/montserrat_medium"/>
     </LinearLayout>

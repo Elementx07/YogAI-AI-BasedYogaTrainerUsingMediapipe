@@ -41,8 +41,6 @@ public class PoseSelectorFragment extends Fragment {
         // Initialize the MainViewModel
         mainViewModel = ((MainActivity) requireActivity()).getMainViewModel();
         ArrayList<Pose> poseArrayList= new ArrayList<Pose>();
-//        poseArrayList.add(new Pose(R.drawable.downwarddog, "Downward Dog"));
-//        poseArrayList.add(new Pose(R.drawable.tree, "Tree"));
         poseArrayList.add(new Pose(R.drawable.splash_image1, "Lotus"));
         poseArrayList.add(new Pose(R.drawable.splash_image3, "Cobra"));
         poseArrayList.add(new Pose(R.drawable.splash_image4, "Camel"));
