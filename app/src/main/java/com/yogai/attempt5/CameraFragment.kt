@@ -107,6 +107,7 @@ class CameraFragment() : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         _fragmentCameraBinding =
             FragmentCameraBinding.inflate(inflater, container, false)
         Log.e(TAG, "onCreateView camera: ")
@@ -232,9 +233,6 @@ class CameraFragment() : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     ) {
         activity?.runOnUiThread {
             if (_fragmentCameraBinding != null) {
-//                fragmentCameraBinding.bottomSheetLayout.inferenceTimeVal.text =
-//                    String.format("%d ms", resultBundle.inferenceTime)
-
                 // Pass necessary information to OverlayView for drawing on the canvas
                 fragmentCameraBinding.overlay.setResults(
                     resultBundle.results.first(),
