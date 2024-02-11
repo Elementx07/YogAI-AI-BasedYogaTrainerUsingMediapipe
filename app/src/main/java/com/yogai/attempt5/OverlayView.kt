@@ -15,21 +15,19 @@
  */
 package com.yogai.attempt5
 
+import android.content.ContentValues.TAG
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
+import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
-import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker.POSE_LANDMARKS
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
-import java.util.Locale
 import kotlin.math.atan2
 import kotlin.math.max
 import kotlin.math.min
@@ -72,9 +70,60 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
         pointPaint.style = Paint.Style.FILL
     }
 
+
+//    override fun draw(canvas: Canvas) {
+//        super.draw(canvas)
+//        results?.let { poseLandmarkerResult ->
+//            //retrieve the selected pose name from the view model
+//            val selectedPose = viewModel?.getSelectedPoseName()
+//            if(selectedPose != null) {
+//                val handler = Handler()
+//                val runnable = Runnable {
+//                    pc.classifyPose(poseLandmarkerResult, selectedPose)
+//                    Log.e(TAG, "draw: bruhh")
+//                }
+//                handler.postDelayed(runnable, 1000)
+//            }
+//            for (landmark in poseLandmarkerResult.landmarks()) {
+//                for (normalizedLandmark in landmark) {
+//                    // Invert Y-coordinate
+//                    val invertedY =normalizedLandmark.y() * imageHeight * scaleFactor
+//
+//                    // Invert X-coordinate if needed
+//                    val invertedX = (1-normalizedLandmark.x()) * imageWidth * scaleFactor - 250
+//
+//                    canvas.drawPoint(invertedX, invertedY, pointPaint)
+//                }
+//
+//                PoseLandmarker.POSE_LANDMARKS.forEach {
+//                    // Invert Y-coordinates for lines
+//                    val startY = (poseLandmarkerResult.landmarks()[0].get(it!!.start()).y() * imageHeight * scaleFactor)
+//                    val endY = (poseLandmarkerResult.landmarks()[0].get(it.end()).y() * imageHeight * scaleFactor)
+//
+//                    // Invert X-coordinates if needed
+//                    val startX = ((1-poseLandmarkerResult.landmarks()[0].get(it.start()).x()) * imageWidth * scaleFactor)-250
+//                    val endX = ((1-poseLandmarkerResult.landmarks()[0].get(it.end()).x()) * imageWidth * scaleFactor)-250
+//
+//                    canvas.drawLine(startX, startY, endX, endY, linePaint)
+//                }
+//            }
+//
+//        }
+//    }
+
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
         results?.let { poseLandmarkerResult ->
+            // Move the postDelayed block outside the loop
+            val selectedPose = viewModel?.getSelectedPoseName()
+            if(selectedPose != null) {
+                val handler = Handler()
+                val runnable = Runnable {
+                    pc.classifyPose(poseLandmarkerResult, selectedPose)
+                }
+                handler.postDelayed(runnable, 1000)
+            }
+
             for (landmark in poseLandmarkerResult.landmarks()) {
                 for (normalizedLandmark in landmark) {
                     // Invert Y-coordinate
@@ -98,13 +147,9 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
                     canvas.drawLine(startX, startY, endX, endY, linePaint)
                 }
             }
-            //retrieve the selected pose name from the view model
-            val selectedPose = viewModel?.getSelectedPoseName()
-            if(selectedPose != null)
-                pc.classifyPose(poseLandmarkerResult, selectedPose);
-            //Log.e(null, "draw: pose is null", )
         }
     }
+
 
     private fun calculateAngle(pointA: PointF, pointB: PointF, pointC: PointF): Double {
         val angleA = atan2(pointB.y - pointA.y, pointB.x - pointA.x)

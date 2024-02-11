@@ -8,7 +8,6 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.View;
 
@@ -94,7 +93,7 @@ public class PoseClassifier {
         return 0;
     }
 
-    private int tree(PoseLandmarkerResult results) {
+    private void tree(PoseLandmarkerResult results) {
 
         PointF wrist = getLandmarkPosition(results, 11);
         PointF elbow = getLandmarkPosition(results, 13);
@@ -105,28 +104,36 @@ public class PoseClassifier {
         Double shoulderAngle = calculateAngle(elbow, shoulder, hip);
         Float visibleHand = results.landmarks().get(0).get(13).visibility().get();
 
-        Log.e(null, ""+viewModel.isHandUp() );
+
+
+        // Check your condition here
         if (visibleHand > 0.5)
         {
-            if (shoulderAngle > 190 && elbowAngle > 300 && elbowAngle<360 && shoulderAngle<210 && !viewModel.isHandUp())
+            boolean previousState = viewModel.isHandUp();
+            //Log.e(TAG, "tree: "+viewModel.isHandUp() );
+            if (shoulderAngle > 180 && elbowAngle < 340 && elbowAngle > 285 && shoulderAngle < 230 )
             {
-                t1.speak("your Hand is up", TextToSpeech.QUEUE_ADD, null);
-                viewModel.setHandUp(true);
-                startTimer();
+                boolean currentState = true;
+                if(previousState != currentState)
+                {
+                    Log.d(null, "hand is up");
+                    t1.speak("your Hand is up", TextToSpeech.QUEUE_ADD, null);
+                    startTimer();
+                    viewModel.setHandUp(true);
+                }
             }
-            else if(viewModel.isHandUp() && shoulderAngle < 190)
-            {
-                viewModel.setHandUp(false);
-                stopTimer();
-                resetTimer();
-            }
-            else if(viewModel.isHandUp() && elbowAngle <300){
-                viewModel.setHandUp(false);
-                stopTimer();
-                resetTimer();
+            else {
+                boolean currentState = false;
+                if(previousState != currentState)
+                {
+                    t1.speak("your Hand is down", TextToSpeech.QUEUE_FLUSH, null);
+                    viewModel.setHandUp(false);
+                    Log.e(null, "hand is down");
+                    stopTimer();
+                    resetTimer();
+                }
             }
         }
-        return 0;
     }
 
     private int triangle() {
