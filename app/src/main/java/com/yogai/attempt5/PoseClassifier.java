@@ -1,5 +1,6 @@
 package com.yogai.attempt5;
 
+import static android.content.ContentValues.TAG;
 import static androidx.camera.core.impl.utils.ContextUtil.getApplicationContext;
 import static java.lang.Math.atan2;
 
@@ -38,13 +39,20 @@ public class PoseClassifier {
     private Handler handler = new Handler();
     private Runnable runnable;
 
+    Boolean stage1,stage2 = true;
+
+    Boolean session = false;
+
     @SuppressLint("RestrictedApi")
     public PoseClassifier(Context context) {
         t1 = new TextToSpeech(getApplicationContext(context), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
-                    t1.setLanguage(Locale.UK);
+                    t1.setLanguage(Locale.US);
+                    float speechRate = 0.5f; // Adjust the value as needed (0.5 is slower, 2.0 is faster)
+                    t1.setSpeechRate(speechRate);
+
                 }
             }
         });
@@ -105,35 +113,43 @@ public class PoseClassifier {
         Float visibleHand = results.landmarks().get(0).get(13).visibility().get();
 
 
-
         // Check your condition here
-        if (visibleHand > 0.5)
-        {
-            boolean previousState = viewModel.isHandUp();
-            //Log.e(TAG, "tree: "+viewModel.isHandUp() );
-            if (shoulderAngle > 180 && elbowAngle < 340 && elbowAngle > 285 && shoulderAngle < 230 )
-            {
-                boolean currentState = true;
-                if(previousState != currentState)
-                {
-                    Log.d(null, "hand is up");
-                    t1.speak("your Hand is up", TextToSpeech.QUEUE_ADD, null);
-                    startTimer();
-                    viewModel.setHandUp(true);
-                }
-            }
-            else {
-                boolean currentState = false;
-                if(previousState != currentState)
-                {
-                    t1.speak("your Hand is down", TextToSpeech.QUEUE_FLUSH, null);
-                    viewModel.setHandUp(false);
-                    Log.e(null, "hand is down");
-                    stopTimer();
-                    resetTimer();
-                }
-            }
+        if (!session ) {
+            t1.speak("Start by standing with your feet together, distributing the weight on all the four corners of your feet. Let your spine be long and aligned with your neck and head. Rest your arms on either side of your body", TextToSpeech.QUEUE_ADD, null);
+            session = true;
         }
+        if(session && !stage1){
+            t1.speak("Now, lift your right foot and place it on the inner left thigh. The sole of the foot should be placed firmly and flat on the inner thigh. The toes should point downwards.", TextToSpeech.QUEUE_ADD, null);
+        }
+        if(session && stage1 && !stage2){
+            t1.speak("Now, bring your palms together in a prayer position at your chest. Take a few deep breaths and relax your mind and body.", TextToSpeech.QUEUE_ADD, null);
+        }
+
+        if (visibleHand > 0.5) {
+                boolean previousState = viewModel.isHandUp();
+                //Log.e(TAG, "tree: "+viewModel.isHandUp() );
+                if (shoulderAngle > 180 && elbowAngle < 340 && elbowAngle > 285 && shoulderAngle < 230) {
+                    boolean currentState = true;
+                    if (previousState != currentState) {
+                        Log.d(null, "hand is up");
+                        t1.speak("your Hand is up", TextToSpeech.QUEUE_ADD, null);
+                        startTimer();
+                        stage1 = true;
+                        viewModel.setHandUp(true);
+                    }
+                } else {
+                    boolean currentState = false;
+                    if (previousState != currentState) {
+                        t1.speak("your Hand is down", TextToSpeech.QUEUE_FLUSH, null);
+                        viewModel.setHandUp(false);
+                        Log.e(null, "hand is down");
+                        stopTimer();
+                        stage1= false;
+                        resetTimer();
+                    }
+                }
+            }
+
     }
 
     private int triangle() {
