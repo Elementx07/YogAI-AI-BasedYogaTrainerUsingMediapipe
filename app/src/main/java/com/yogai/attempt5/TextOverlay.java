@@ -89,7 +89,10 @@ public class TextOverlay extends View {
             pointPaint2.setTextSize(90f);
 
 
+            PointF left_anckle = getLandmarkPosition(results, 27);
+            PointF left_knee = getLandmarkPosition(results, 25);
 
+            Double kneeAngle = calculateAngle(left_anckle, left_knee, hip);
             // Draw the angle on the canvas
             String elbow_angle_text = String.format(Locale.US, "Elbow Angle: %.2f degrees", elbow_angle);
             canvas.drawText(elbow_angle_text, 20f, 80f, pointPaint2);
