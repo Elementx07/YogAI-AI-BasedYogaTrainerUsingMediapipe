@@ -112,7 +112,10 @@ public class PoseClassifier {
         Double shoulderAngle = calculateAngle(elbow, shoulder, hip);
         Float visibleHand = results.landmarks().get(0).get(13).visibility().get();
 
+        PointF left_anckle = getLandmarkPosition(results, 27);
+        PointF left_knee = getLandmarkPosition(results, 25);
 
+        Double kneeAngle = calculateAngle(left_anckle, left_knee, hip);
         // Check your condition here
         if (!session ) {
             t1.speak("Start by standing with your feet together, distributing the weight on all the four corners of your feet. Let your spine be long and aligned with your neck and head. Rest your arms on either side of your body", TextToSpeech.QUEUE_ADD, null);
@@ -136,6 +139,9 @@ public class PoseClassifier {
                         startTimer();
                         stage1 = true;
                         viewModel.setHandUp(true);
+                    }
+                    if(kneeAngle > 90){
+                        t1.speak("your knee is bent", TextToSpeech.QUEUE_ADD, null);
                     }
                 } else {
                     boolean currentState = false;
