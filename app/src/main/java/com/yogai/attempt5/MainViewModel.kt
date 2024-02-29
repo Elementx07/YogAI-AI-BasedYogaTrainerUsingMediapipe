@@ -26,10 +26,10 @@ class MainViewModel : ViewModel() {
 
     init {
         // Initialize your poseList with Pose objects
-        poseList.add(Pose(R.drawable.splash_image1, "Lotus"))
-        poseList.add(Pose(R.drawable.splash_image3, "Cobra"))
-        poseList.add(Pose(R.drawable.splash_image4, "Camel"))
-        poseList.add(Pose(R.drawable.splash_image5, "Extended Triangle"))
+        poseList.add(Pose(R.drawable.lotus, "Lotus"))
+        poseList.add(Pose(R.drawable.cobra, "Cobra"))
+        poseList.add(Pose(R.drawable.camel, "Camel"))
+        poseList.add(Pose(R.drawable.triangle, "Extended Triangle"))
         // Add more poses as needed
     }
 

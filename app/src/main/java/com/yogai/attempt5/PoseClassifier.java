@@ -39,9 +39,10 @@ public class PoseClassifier {
     private Handler handler = new Handler();
     private Runnable runnable;
 
-    Boolean stage1,stage2 = true;
-
-    Boolean session = false;
+    boolean stage1,stage2 = false;
+    boolean flag1=false;
+    boolean poseComplete = false;
+    boolean session = false;
 
     @SuppressLint("RestrictedApi")
     public PoseClassifier(Context context) {
@@ -49,7 +50,7 @@ public class PoseClassifier {
             @Override
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
-                    t1.setLanguage(Locale.US);
+                    t1.setLanguage(Locale.UK);
                     float speechRate = 0.5f; // Adjust the value as needed (0.5 is slower, 2.0 is faster)
                     t1.setSpeechRate(speechRate);
 
@@ -102,7 +103,6 @@ public class PoseClassifier {
     }
 
     private void tree(PoseLandmarkerResult results) {
-
         PointF wrist = getLandmarkPosition(results, 11);
         PointF elbow = getLandmarkPosition(results, 13);
         PointF shoulder = getLandmarkPosition(results, 15);
@@ -112,50 +112,53 @@ public class PoseClassifier {
         Double shoulderAngle = calculateAngle(elbow, shoulder, hip);
         Float visibleHand = results.landmarks().get(0).get(13).visibility().get();
 
-        PointF left_anckle = getLandmarkPosition(results, 27);
-        PointF left_knee = getLandmarkPosition(results, 25);
+        PointF leftAnkle = getLandmarkPosition(results, 27);
+        PointF leftKnee = getLandmarkPosition(results, 25);
+        Double kneeAngle = calculateAngle(leftAnkle, leftKnee, hip);
 
-        Double kneeAngle = calculateAngle(left_anckle, left_knee, hip);
-        // Check your condition here
-        if (!session ) {
-            t1.speak("Start by standing with your feet together, distributing the weight on all the four corners of your feet. Let your spine be long and aligned with your neck and head. Rest your arms on either side of your body", TextToSpeech.QUEUE_ADD, null);
+        if (!session) {
+            t1.speak("Start by standing with your feet together, distributing the weight evenly. Align your spine with your neck and head. Relax your arms by your sides.", TextToSpeech.QUEUE_ADD, null);
             session = true;
-        }
-        if(session && !stage1){
-            t1.speak("Now, lift your right foot and place it on the inner left thigh. The sole of the foot should be placed firmly and flat on the inner thigh. The toes should point downwards.", TextToSpeech.QUEUE_ADD, null);
-        }
-        if(session && stage1 && !stage2){
-            t1.speak("Now, bring your palms together in a prayer position at your chest. Take a few deep breaths and relax your mind and body.", TextToSpeech.QUEUE_ADD, null);
+        } else if (session && !stage1 && !flag1){
+            t1.speak("Now, lift your right foot and place it on the inner left thigh, ensuring the sole is firmly against the thigh and toes point downward.", TextToSpeech.QUEUE_ADD, null);
+            flag1= true;
+        } else if (session && stage1 && !stage2) {
+            t1.speak("Now, bring your arms straight up and touch your palms.", TextToSpeech.QUEUE_ADD, null);
+            stage2 = true;
         }
 
-        if (visibleHand > 0.5) {
-                boolean previousState = viewModel.isHandUp();
-                //Log.e(TAG, "tree: "+viewModel.isHandUp() );
-                if (shoulderAngle > 180 && elbowAngle < 340 && elbowAngle > 285 && shoulderAngle < 230) {
-                    boolean currentState = true;
-                    if (previousState != currentState) {
-                        Log.d(null, "hand is up");
-                        t1.speak("your Hand is up", TextToSpeech.QUEUE_ADD, null);
+        if (visibleHand > 0.5 && session && !poseComplete) {
+            boolean previousState = viewModel.isHandUp();
+            if (shoulderAngle > 180 && elbowAngle < 340 && elbowAngle > 285 && shoulderAngle < 230) {
+                boolean currentState = true;
+                if (previousState != currentState) {
+                    if (stage1) {
+                        t1.speak("Your pose is complete. Hold this position as long as possible.", TextToSpeech.QUEUE_ADD, null);
+                        poseComplete=true;
                         startTimer();
-                        stage1 = true;
-                        viewModel.setHandUp(true);
                     }
-                    if(kneeAngle > 90){
-                        t1.speak("your knee is bent", TextToSpeech.QUEUE_ADD, null);
-                    }
-                } else {
-                    boolean currentState = false;
-                    if (previousState != currentState) {
-                        t1.speak("your Hand is down", TextToSpeech.QUEUE_FLUSH, null);
-                        viewModel.setHandUp(false);
-                        Log.e(null, "hand is down");
-                        stopTimer();
-                        stage1= false;
-                        resetTimer();
-                    }
+                    t1.speak("Your hand is up.", TextToSpeech.QUEUE_ADD, null);
+                    stage2 = true;
+                    viewModel.setHandUp(true);
+                }
+            } else {
+                boolean currentState = false;
+                if (previousState != currentState) {
+                    t1.speak("Your hand is down.", TextToSpeech.QUEUE_FLUSH, null);
+                    Log.d(TAG, "tree: Hand down");
+                    viewModel.setHandUp(false);
+                    stopTimer();
+                    resetTimer();
+                    stage2 = false;
+                    poseComplete = false;
                 }
             }
-
+            if (kneeAngle < 210 && kneeAngle > 190 && !stage1 ) {
+                // Additional condition logic if needed
+                t1.speak("Your knee is bent.", TextToSpeech.QUEUE_ADD, null);
+                stage1 = true;
+            }
+        }
     }
 
     private int triangle() {

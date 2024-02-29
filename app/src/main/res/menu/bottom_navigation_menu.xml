@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/hm"
+        android:title="Home" />
+    <item
+        android:id="@+id/poses"
+        android:icon="@drawable/lotus"
+        android:title="Poses" />
+    <item
+        android:id="@+id/progress"
+        android:icon="@drawable/track"
+        android:title="Routines" />
+</menu>

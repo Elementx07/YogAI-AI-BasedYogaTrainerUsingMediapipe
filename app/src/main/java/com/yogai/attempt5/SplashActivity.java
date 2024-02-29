@@ -9,10 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashActivity extends AppCompatActivity {
     private final int[] imageArray = {
-            R.drawable.splash_image1,
-            R.drawable.splash_image2,
-            R.drawable.splash_image3,
-            R.drawable.splash_image4
+            R.drawable.lotus,
+            R.drawable.sitting,
+            R.drawable.cobra,
+            R.drawable.camel
     };
     private int currentIndex = 0;
 

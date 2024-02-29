@@ -94,11 +94,14 @@ public class TextOverlay extends View {
 
             Double kneeAngle = calculateAngle(left_anckle, left_knee, hip);
             // Draw the angle on the canvas
-            String elbow_angle_text = String.format(Locale.US, "Elbow Angle: %.2f degrees", elbow_angle);
+            String elbow_angle_text = String.format(Locale.US, "Elbow Angle: %.2f ", elbow_angle);
             canvas.drawText(elbow_angle_text, 20f, 80f, pointPaint2);
 
-            String shoulder_angle_text = String.format(Locale.US, "Shoulder Angle: %.2f degrees", shoulder_angle);
+            String shoulder_angle_text = String.format(Locale.US, "Shoulder Angle: %.2f ", shoulder_angle);
             canvas.drawText(shoulder_angle_text, 20f, 240f, pointPaint2);
+
+            String knee_angle_text = String.format(Locale.US, "Knee Angle: %.2f ", kneeAngle);
+            canvas.drawText(knee_angle_text, 20f, 400f, pointPaint2);
         }
     }
 

@@ -1,72 +1,56 @@
 package com.yogai.attempt5;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.GridView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+import com.yogai.attempt5.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity   {
-
+    BottomNavigationView nv;
+    ActivityMainBinding binding;
     @Override
+    @SuppressLint("MissingInflatedId")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        replaceFragment(new HomeFragment());
         MainViewModel mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        PoseSelectorFragment poseSelectorFragment = new PoseSelectorFragment(this,this);
-        CameraFragment cf = new CameraFragment();
 
-
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                Fragment selectedFragment = null;
-                switch (tab.getPosition()) {
-                    case 0:
-                        // Home tab selected
-                        selectedFragment = cf;
-                        break;
-                    case 1:
-                        // Classes tab selected
-                        selectedFragment = poseSelectorFragment;
-                        break;
-                    // Add more cases if there are more tabs
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.home) {
+                    replaceFragment(new HomeFragment());
+                    return true;
+                } else if (item.getItemId() == R.id.poses) {
+                    replaceFragment(new PoseSelectorFragment(MainActivity.this, MainActivity.this));
+                    return true;
                 }
-
-                if (selectedFragment != null) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                // Do nothing
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                // Do nothing
+                return false;
             }
         });
 
-    }
 
+    }
 
     public MainViewModel getMainViewModel() {
         return new ViewModelProvider(this).get(MainViewModel.class);
     }
 
-    public void replaceFragmentWithCamera() {
-        Log.d(null, "replaceFragmentWithCamera: ");
-        CameraFragment cf = new CameraFragment();
+    public void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container,cf );
+        transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
     }
-
 
 }

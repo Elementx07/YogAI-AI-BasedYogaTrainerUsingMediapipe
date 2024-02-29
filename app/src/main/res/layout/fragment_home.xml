@@ -1,0 +1,239 @@
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FEF2EC">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/montserrat_medium"
+        android:text="Namaste,\nJay"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="228dp"
+        android:layout_height="211dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/strech"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="@font/montserrat_medium"
+        android:text="Day 1"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.251" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="117dp"
+        android:layout_height="41dp"
+        android:fontFamily="@font/montserrat"
+
+
+        android:text="Beginner"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.054"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.34" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_medium"
+        android:text="Latest Practices"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.091"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.745" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="365dp"
+        android:layout_height="84dp"
+        android:orientation="horizontal"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.347"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.879"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:src="@drawable/yoga"
+            />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:src="@drawable/camel" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/triangle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="379dp"
+        android:layout_height="206dp"
+        android:background="#FCEBDA"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.554">
+
+        <!--Pie chart to display the data-->
+
+        <org.eazegraph.lib.charts.PieChart xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/piechart"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_weight="1"
+            android:padding="6dp"
+
+            />
+
+        <!--Creating another linear layout -->
+        <!-- to display pie chart details -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_gravity="center_vertical">
+
+                <!--View to display the yellow color icon-->
+                <View
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/R" />
+
+                <!--Text view to display R -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="R" />
+
+            </LinearLayout>
+
+            <!--Linear layout to display Python-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="5dp">
+
+                <!--View to display the green color icon-->
+                <View
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/Python" />
+
+                <!--Text view to display python text -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Python" />
+
+            </LinearLayout>
+
+            <!--Linear layout to display C++-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="5dp">
+
+                <!--View to display the red color icon-->
+                <View
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/CPP" />
+
+                <!--Text view to display C++ text -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="C++" />
+
+            </LinearLayout>
+
+            <!--Linear layout to display Java-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="5dp">
+
+                <!--View to display the blue color icon-->
+                <View
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/Java" />
+
+                <!--Text view to display Java text -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Java" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

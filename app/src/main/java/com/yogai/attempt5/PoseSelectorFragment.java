@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -14,10 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PoseSelectorFragment extends Fragment {
     private MainViewModel mainViewModel;
@@ -41,10 +38,10 @@ public class PoseSelectorFragment extends Fragment {
         // Initialize the MainViewModel
         mainViewModel = ((MainActivity) requireActivity()).getMainViewModel();
         ArrayList<Pose> poseArrayList= new ArrayList<Pose>();
-        poseArrayList.add(new Pose(R.drawable.splash_image1, "Lotus"));
-        poseArrayList.add(new Pose(R.drawable.splash_image3, "Cobra"));
-        poseArrayList.add(new Pose(R.drawable.splash_image4, "Camel"));
-        poseArrayList.add(new Pose(R.drawable.splash_image5, "Extended Triangle"));
+        poseArrayList.add(new Pose(R.drawable.lotus, "Lotus"));
+        poseArrayList.add(new Pose(R.drawable.cobra, "Cobra"));
+        poseArrayList.add(new Pose(R.drawable.camel, "Camel"));
+        poseArrayList.add(new Pose(R.drawable.triangle, "Extended Triangle"));
         // Create an instance of PoseAdapter and set it as the adapter of the GridView
         PoseAdapter adapter = new PoseAdapter(context,poseArrayList);
         poses.setAdapter(adapter);
@@ -58,11 +55,12 @@ public class PoseSelectorFragment extends Fragment {
                 Log.d(null, "onItemClick: "+mainViewModel.getSelectedPoseName());
                 Activity activity = getActivity();
                 if (activity != null) {
-                    mainActivity.replaceFragmentWithCamera();
+                    mainActivity.replaceFragment(new PoseInfoFragment(context,mainActivity));
                 }
                 else {
                     Log.d(null, "activity null"+activity);
                 }
+
             }
         });
 

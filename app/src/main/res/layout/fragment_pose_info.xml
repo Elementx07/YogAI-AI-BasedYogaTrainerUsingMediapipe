@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PoseInfoFragment">
+
+    <TextView
+        android:id="@+id/pose_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#1C1F29"
+        android:fontFamily="@font/montserrat_medium"
+        android:gravity="center"
+        android:text="Pose Details"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+        />
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="39dp"
+        android:layout_alignLeft="@id/pose_details"
+        android:id="@+id/back_button"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="-3dp"
+        android:layout_marginLeft="-53dp"
+        android:layout_marginTop="0dp"
+        android:background="#1C1F29"
+        android:foregroundTint="#FFFFFF"
+        android:src="@drawable/back" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pose_image"
+        android:src="@drawable/tree"
+        android:layout_below="@id/pose_details"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Next"
+        android:fontFamily="@font/montserrat_medium"
+        android:backgroundTint="@color/cardview_dark_background"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pose name"
+        android:layout_below="@id/pose_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/montserrat_medium"
+        android:textSize="20sp" />
+
+
+</RelativeLayout>
