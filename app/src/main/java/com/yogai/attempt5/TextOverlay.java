@@ -4,6 +4,7 @@ import static androidx.camera.core.impl.utils.ContextUtil.getApplicationContext;
 import static java.lang.Math.atan2;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,55 +16,53 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SoundEffectConstants;
 import android.view.View;
+import com.github.anastr.speedviewlib.Speedometer;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+import com.github.anastr.speedviewlib.Speedometer;
 import com.google.mediapipe.tasks.components.containers.NormalizedLandmark;
 import com.google.mediapipe.tasks.vision.core.RunningMode;
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult;
+import com.yogai.attempt5.databinding.ActivityMainBinding;
+import com.yogai.attempt5.databinding.FragmentCameraBinding;
 
 import org.jetbrains.annotations.TestOnly;
 
 import java.util.Locale;
 
 public class TextOverlay extends View {
-    @SuppressLint("RestrictedApi")
-    public TextOverlay(Context context, AttributeSet attrs) {
-        super(context,attrs);
-        initPaints();
-        t1 = new TextToSpeech(getApplicationContext(context), new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(int status) {
-                        if(status != TextToSpeech.ERROR) {
-                            t1.setLanguage(Locale.UK);
-                        }
-                    }
-                });
-    }
-
     private PoseLandmarkerResult results;
-    private Paint pointPaint2;
-
+    private Paint pointPaint2, dialPaint, needlePaint;
+    Speedometer accuracyMeter;
     private int previousState=1;
-
     private float scaleFactor = 1f;
     private int imageWidth = 1;
     private int imageHeight = 1;
     private TextToSpeech t1;
     private MainViewModel viewModel = new MainViewModel();
-
     private long handUpTime=0;
-
-
-
+    private PoseClassifier pc;
+    CameraFragment cf;
+    Context context;
+    AccuracyFragment af;
+    double accuracy;
+    @SuppressLint("RestrictedApi")
+    public TextOverlay(Context context, AttributeSet attrs) {
+        super(context,attrs);
+        this.context = context;
+        initPaints();
+        pc = PoseClassifier.getInstance(context);
+        cf=new CameraFragment();
+        af=new AccuracyFragment();
+    }
     public void clear() {
         results = null;
         pointPaint2.reset();
         invalidate();
         initPaints();
     }
-
     private void initPaints() {
         pointPaint2 = new Paint();
         pointPaint2.setColor(Color.YELLOW);
@@ -73,6 +72,7 @@ public class TextOverlay extends View {
 
     private static final float LANDMARK_STROKE_WIDTH = 12F;
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void draw(@NonNull Canvas canvas) {
         super.draw(canvas);
@@ -102,9 +102,17 @@ public class TextOverlay extends View {
 
             String knee_angle_text = String.format(Locale.US, "Knee Angle: %.2f ", kneeAngle);
             canvas.drawText(knee_angle_text, 20f, 400f, pointPaint2);
+
+             accuracy = (
+                    af.calculateAngleAccuracy(330,elbow_angle)
+                    +af.calculateAngleAccuracy(200,shoulder_angle)
+                    +af.calculateAngleAccuracy(200,kneeAngle)
+            )/3;
+            //af.setAccuracyMeter(accuracy);
+            String accuracy_text = String.format(Locale.US, "Accuracy: %.2f ", accuracy);
+            canvas.drawText(accuracy_text, 20f, 560f, pointPaint2);
         }
     }
-
     private Double calculateAngle(PointF pointA,PointF pointB,PointF pointC){
         Double angleA = atan2(pointB.y - pointA.y, pointB.x - pointA.x);
         Double angleB = atan2(pointC.y - pointB.y, pointC.x - pointB.x);
@@ -113,14 +121,12 @@ public class TextOverlay extends View {
             angle=angle + 360;
         return angle;
     }
-
     private PointF getLandmarkPosition(PoseLandmarkerResult poseLandmarkerResult ,int landmark) {
         return new PointF(
                 poseLandmarkerResult.landmarks().get(0).get(landmark).x() * imageWidth * scaleFactor,
                 poseLandmarkerResult.landmarks().get(0).get(landmark).y() * imageHeight * scaleFactor
         );
     }
-
     public void setResults(PoseLandmarkerResult pResults, int imageWidth, int imageHeight, RunningMode runningMode) {
         results = pResults;
         this.imageWidth = imageWidth;
@@ -130,7 +136,4 @@ public class TextOverlay extends View {
                 : Math.min(getWidth() * 1f / imageWidth, getHeight() * 1f / imageHeight);
         invalidate();
     }
-
-
-
 }

@@ -2,6 +2,7 @@ package com.yogai.attempt5;
 
 import static android.content.ContentValues.TAG;
 import static androidx.camera.core.impl.utils.ContextUtil.getApplicationContext;
+import static com.google.android.material.internal.ContextUtils.getActivity;
 import static java.lang.Math.atan2;
 
 import android.annotation.SuppressLint;
@@ -11,8 +12,13 @@ import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult;
+import com.yogai.attempt5.databinding.FragmentCameraBinding;
 
 import java.util.Locale;
 
@@ -23,41 +29,56 @@ public class PoseClassifier {
     private float scaleFactor = 1f;
     private int imageWidth = 1;
     private int imageHeight = 1;
-
     private View v;
-
     private int selectedPose;
-
     MainViewModel viewModel = new MainViewModel();
-
+    FragmentCameraBinding binding;
     private TextToSpeech t1;
-
-
+    Context context;
     private boolean isRunning = false;
     private int seconds = 0;
-
     private Handler handler = new Handler();
     private Runnable runnable;
-
     boolean stage1,stage2 = false;
     boolean flag1=false;
+    boolean flag2=false;
+    boolean flag3=false;
     boolean poseComplete = false;
     boolean session = false;
+    double accuracy;
+    double averageAccuracy=0;
+    CameraFragment cf;
+    AccuracyFragment af;
+    Button end;
+    String time=" 00:00";
+    private static PoseClassifier instance;
+    public static synchronized PoseClassifier getInstance(Context context) {
+        if (instance == null) {
+            instance = new PoseClassifier(context);
+        }
+        return instance;
+    }
+
+    public String getTime() {
+        return time;
+    }
 
     @SuppressLint("RestrictedApi")
     public PoseClassifier(Context context) {
-        t1 = new TextToSpeech(getApplicationContext(context), new TextToSpeech.OnInitListener() {
+        this.context = context;
+        this.t1 = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
+                if (status != TextToSpeech.ERROR) {
                     t1.setLanguage(Locale.UK);
-                    float speechRate = 0.5f; // Adjust the value as needed (0.5 is slower, 2.0 is faster)
-                    t1.setSpeechRate(speechRate);
-
+                    t1.setSpeechRate(0.5f);
                 }
             }
         });
+        this.cf=new CameraFragment();
     }
+
+
 
     private Double calculateAngle(PointF pointA, PointF pointB, PointF pointC){
         Double angleA = atan2(pointB.y - pointA.y, pointB.x - pointA.x);
@@ -78,7 +99,7 @@ public class PoseClassifier {
     public int classifyPose(PoseLandmarkerResult results,String selectedPose) {
         if(results != null && results.landmarks().size() > 0) {
             switch (selectedPose) {
-                case "Lotus":
+                case "Tree":
                     tree(results);
                 case "Cobra":
                     downwarddog();
@@ -115,50 +136,73 @@ public class PoseClassifier {
         PointF leftAnkle = getLandmarkPosition(results, 27);
         PointF leftKnee = getLandmarkPosition(results, 25);
         Double kneeAngle = calculateAngle(leftAnkle, leftKnee, hip);
-
         if (!session) {
             t1.speak("Start by standing with your feet together, distributing the weight evenly. Align your spine with your neck and head. Relax your arms by your sides.", TextToSpeech.QUEUE_ADD, null);
             session = true;
         } else if (session && !stage1 && !flag1){
             t1.speak("Now, lift your right foot and place it on the inner left thigh, ensuring the sole is firmly against the thigh and toes point downward.", TextToSpeech.QUEUE_ADD, null);
             flag1= true;
-        } else if (session && stage1 && !stage2) {
+        } else if (session && stage1 && !stage2 && !flag2) {
             t1.speak("Now, bring your arms straight up and touch your palms.", TextToSpeech.QUEUE_ADD, null);
-            stage2 = true;
+            flag2=true;
         }
 
-        if (visibleHand > 0.5 && session && !poseComplete) {
+        if (visibleHand > 0.5 && session ) {
             boolean previousState = viewModel.isHandUp();
-            if (shoulderAngle > 180 && elbowAngle < 340 && elbowAngle > 285 && shoulderAngle < 230) {
-                boolean currentState = true;
-                if (previousState != currentState) {
-                    if (stage1) {
-                        t1.speak("Your pose is complete. Hold this position as long as possible.", TextToSpeech.QUEUE_ADD, null);
-                        poseComplete=true;
-                        startTimer();
-                    }
-                    t1.speak("Your hand is up.", TextToSpeech.QUEUE_ADD, null);
-                    stage2 = true;
-                    viewModel.setHandUp(true);
-                }
-            } else {
-                boolean currentState = false;
-                if (previousState != currentState) {
-                    t1.speak("Your hand is down.", TextToSpeech.QUEUE_FLUSH, null);
-                    Log.d(TAG, "tree: Hand down");
-                    viewModel.setHandUp(false);
-                    stopTimer();
-                    resetTimer();
-                    stage2 = false;
-                    poseComplete = false;
-                }
+            boolean currentState = (shoulderAngle > 180 && elbowAngle < 340 && elbowAngle > 285 && shoulderAngle < 230);
+//            Log.d(TAG, "Previous State: " + previousState + ", Current State: " + currentState);
+//            if (currentState != previousState) {
+//                if (currentState) {
+//                    if (stage1) {
+//                        t1.speak("Your pose is complete. Hold this position as long as possible.", TextToSpeech.QUEUE_ADD, null);
+//                        poseComplete = true;
+//                        startTimer();
+//                    }
+//                    t1.speak("Your hand is up.", TextToSpeech.QUEUE_ADD, null);
+//                    stage2 = true;
+//                    viewModel.setHandUp(true);
+//                } else {
+//                    t1.speak("Your hand is down.", TextToSpeech.QUEUE_FLUSH, null);
+//                    Log.d(TAG, "Hand down");
+//                    viewModel.setHandUp(false);
+//                    stopTimer();
+//                    resetTimer();
+//                    stage2 = false;
+//                    flag2=false;
+//                    poseComplete = false;
+//                }
+//            }
+            if(currentState && !flag3 && stage1 && !stage2) {
+                t1.speak("Your pose is complete. Hold this position as long as possible.", TextToSpeech.QUEUE_ADD, null);
+                startTimer();
+                t1.speak("Your hand is up.", TextToSpeech.QUEUE_ADD, null);
+                stage2 = true;
+                viewModel.setHandUp(true);
             }
-            if (kneeAngle < 210 && kneeAngle > 190 && !stage1 ) {
+            if((shoulderAngle>0 || shoulderAngle <350) && shoulderAngle<160 && stage2){
+                t1.speak("Your hand is down.", TextToSpeech.QUEUE_FLUSH, null);
+                Log.d(TAG, "Hand down");
+                viewModel.setHandUp(false);
+                stopTimer();
+                resetTimer();
+                stage2 = false;
+                flag2=false;
+            }
+            if (kneeAngle < 210 && kneeAngle > 190 && !stage1) {
                 // Additional condition logic if needed
                 t1.speak("Your knee is bent.", TextToSpeech.QUEUE_ADD, null);
                 stage1 = true;
+                flag1=true;
+            }
+            if ((kneeAngle>350 || (kneeAngle > 0 && kneeAngle<180)) && stage1) {
+                t1.speak("Your knee is straight.", TextToSpeech.QUEUE_FLUSH, null);
+                stage1 = false;
+                flag1=false;
             }
         }
+
+
+
     }
 
     private int triangle() {
@@ -188,13 +232,15 @@ public class PoseClassifier {
     private String updateTimerText() {
         int minutes = seconds / 60;
         int remainingSeconds = seconds % 60;
-
-        //String time = String.format("%02d:%02d", minutes, remainingSeconds);
+        averageAccuracy=(averageAccuracy+accuracy)/remainingSeconds;
+        time = String.format("%02d:%02d", minutes, remainingSeconds);
+        Log.e(TAG, "updateTimerText: "+time );
+        viewModel.setPoseDuration(time);
         return ""+remainingSeconds;
-
     }
 
-    private void stopTimer() {
+    public void stopTimer() {
+        Log.e(TAG, "stopTimer: ",null );
         if (isRunning) {
             isRunning = false;
             handler.removeCallbacks(runnable);
@@ -204,5 +250,9 @@ public class PoseClassifier {
     private void resetTimer() {
         seconds = 0;
         updateTimerText();
+    }
+
+    public void stopTTS(){
+        t1.shutdown();
     }
 }

@@ -15,11 +15,14 @@ import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.yogai.attempt5.databinding.ActivityMainBinding;
+
 public class PoseInfoFragment extends Fragment {
     MainActivity mainActivity;
     Context context;
     Button next;
     MainViewModel mainViewModel;
+    ActivityMainBinding binding;
     PoseInfoFragment(Context context, MainActivity mainActivity){
         this.mainActivity = mainActivity;
         this.context=context;
@@ -36,12 +39,19 @@ public class PoseInfoFragment extends Fragment {
         ImageView imageView = view.findViewById(R.id.back_button);
         ImageView poseImage = view.findViewById(R.id.pose_image);
         String pi=mainViewModel.getSelectedPoseName();
-
-
+        //move to home on back button click
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainActivity.replaceFragment(new HomeFragment(mainActivity),0);
+            }
+        });
+        //hide navigation bar
+        mainActivity.hideNavigationBar();
         imageView.setImageResource(R.drawable.back);
         //set the pose image based on the selected pose name
         if(pi.equals("Lotus")){
-            poseImage.setImageResource(R.drawable.lotus);
+            poseImage.setImageResource(R.drawable.tree_detail);
         }
         else if(pi.equals("Cobra")){
             poseImage.setImageResource(R.drawable.cobra);
@@ -63,7 +73,7 @@ public class PoseInfoFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainActivity.replaceFragment(new CameraFragment());
+                mainActivity.replaceFragment(new CameraFragment(),0);
             }
         });
         return view;

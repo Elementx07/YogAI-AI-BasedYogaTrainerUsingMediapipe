@@ -3,17 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".PoseSelectorFragment">
-
-    <GridView
+    tools:context=".PoseSelectorFragment"
+    android:background="#FEF2EC">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/idTitle"
+        android:text="Yoga Poses"
+        android:textSize="40sp"
+        android:fontFamily="@font/montserrat_medium"
+        android:textColor="#49454F"
+        android:textStyle="bold"/>
+    <com.google.android.material.search.SearchBar
+        android:layout_below="@+id/idTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search Pose"
+        android:id="@+id/idSearch"/>
+    <ListView
         android:id="@+id/gridView"
+        android:layout_below="@id/idSearch"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="2"
-        android:horizontalSpacing="8dp"
-        android:verticalSpacing="8dp"
+        android:horizontalSpacing="16dp"
+        android:verticalSpacing="16dp"
         android:padding="16dp"
-        android:columnWidth="100dp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:divider="#00FFFFFF"
+        android:dividerHeight="20.00sp"/>
 
 </RelativeLayout>

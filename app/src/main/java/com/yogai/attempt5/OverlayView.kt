@@ -44,7 +44,7 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
     private var imageHeight: Int = 1
 
     private var viewModel: MainViewModel?= MainViewModel()
-    val pc = PoseClassifier(this.context)
+    private val pc = PoseClassifier.getInstance(context)
 
 
     init {
@@ -147,26 +147,10 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
                     canvas.drawLine(startX, startY, endX, endY, linePaint)
                 }
             }
+
+
         }
     }
-
-
-    private fun calculateAngle(pointA: PointF, pointB: PointF, pointC: PointF): Double {
-        val angleA = atan2(pointB.y - pointA.y, pointB.x - pointA.x)
-        val angleB = atan2(pointC.y - pointB.y, pointC.x - pointB.x)
-        var angle = Math.toDegrees((angleB - angleA).toDouble())
-        angle = if (angle < 0) angle + 360 else angle
-        return angle
-    }
-
-    private fun getLandmarkPosition(poseLandmarkerResult: PoseLandmarkerResult, landmark: Int): PointF {
-        val landmarkObject = poseLandmarkerResult.landmarks()[0].get(landmark)
-        return PointF(
-            landmarkObject.x() * imageWidth * scaleFactor,
-            landmarkObject.y() * imageHeight * scaleFactor
-        )
-    }
-
 
 
     fun setResults(
@@ -194,8 +178,6 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
         }
         invalidate()
     }
-
-
 
     companion object {
         private const val LANDMARK_STROKE_WIDTH = 12F

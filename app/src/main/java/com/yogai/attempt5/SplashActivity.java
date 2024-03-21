@@ -43,6 +43,6 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 10000); // Change the delay as per your requirement
+        }, 5000); // Change the delay as per your requirement
     }
 }

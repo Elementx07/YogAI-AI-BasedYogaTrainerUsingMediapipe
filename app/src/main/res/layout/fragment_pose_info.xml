@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PoseInfoFragment">
+    tools:context=".PoseInfoFragment"
+    android:background="#FEF2EC">
 
     <TextView
         android:id="@+id/pose_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="#1C1F29"
+        android:background="#BDB788"
         android:fontFamily="@font/montserrat_medium"
         android:gravity="center"
         android:text="Pose Details"
-        android:textColor="@color/white"
+        android:textColor="#49454F"
         android:textSize="25sp"
         android:textStyle="bold" />
         />
@@ -29,17 +30,17 @@
         android:layout_marginStart="-3dp"
         android:layout_marginLeft="-53dp"
         android:layout_marginTop="0dp"
-        android:background="#1C1F29"
+        android:background="#BCB687"
         android:foregroundTint="#FFFFFF"
         android:src="@drawable/back" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/pose_image"
-        android:src="@drawable/tree"
+        android:layout_width="245dp"
+        android:layout_height="330dp"
         android:layout_below="@id/pose_details"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/tree_detail" />
 
     <Button
         android:id="@+id/next"
@@ -48,20 +49,54 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Next"
+        android:layout_marginEnd="-1dp"
+        android:layout_marginBottom="25dp"
+        android:backgroundTint="#BCB687"
         android:fontFamily="@font/montserrat_medium"
-        android:backgroundTint="@color/cardview_dark_background"
-        />
+        android:text="Next" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pose name"
+        android:textColor="#49454F"
         android:layout_below="@id/pose_image"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:fontFamily="@font/montserrat_medium"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:id="@+id/pose_name"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pose_name">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Benefits"
+                android:textColor="#49454F"
+                android:fontFamily="@font/montserrat"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:background="#FCEBDA"
+                android:id="@+id/benefits_title"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:textColor="#49454F"
+                android:layout_height="wrap_content"
+                android:text="1.Strengthen and tones your thighs and calves\n2.Stretches your hamstrings\n3.Opens up your sense of balance"
+                android:fontFamily="@font/montserrat"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
+
+    </ScrollView>
+
 
 
 </RelativeLayout>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "501102084556",
+    "project_id": "attempt5-c5301",
+    "storage_bucket": "attempt5-c5301.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:501102084556:android:05ca58cdc219484a709d69",
+        "android_client_info": {
+          "package_name": "com.yogai.attempt5"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjOIdH0xqRR32_FeN55rybg4NciC_9Gco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,16 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FEF2EC">
+    android:background="#EDC9B7">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/greet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:fontFamily="@font/montserrat_medium"
+        android:textColor="#49454F"
         android:text="Namaste,\nJay"
+
+        android:elevation="5dp"
         android:textSize="50sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +30,6 @@
         android:src="@drawable/strech"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -39,6 +41,7 @@
         android:layout_marginStart="16dp"
         android:fontFamily="@font/montserrat_medium"
         android:text="Day 1"
+        android:textColor="#49454F"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -51,7 +54,7 @@
         android:layout_width="117dp"
         android:layout_height="41dp"
         android:fontFamily="@font/montserrat"
-
+        android:textColor="#49454F"
 
         android:text="Beginner"
         android:textSize="25sp"
@@ -67,9 +70,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_medium"
-        android:text="Latest Practices"
+        android:text="Recent Sessions"
         android:textSize="30sp"
         android:textStyle="bold"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.091"
@@ -92,31 +96,35 @@
         tools:ignore="MissingConstraints">
 
         <ImageView
+            android:id="@+id/img1"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
-            android:src="@drawable/yoga"
+            android:src="@drawable/cobra_round"
             />
 
         <ImageView
+            android:id="@+id/img2"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:src="@drawable/camel" />
+            android:src="@drawable/extended_round" />
 
         <ImageView
+            android:id="@+id/img3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/triangle" />
+            android:src="@drawable/warrior_round" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="379dp"
         android:layout_height="206dp"
-        android:background="#FCEBDA"
+        android:background="#EDDCCA"
         android:orientation="horizontal"
         android:weightSum="2"
+        android:elevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -149,7 +157,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical">
 
                 <!--View to display the yellow color icon-->
@@ -160,17 +168,20 @@
 
                 <!--Text view to display R -->
                 <TextView
+                    android:id="@+id/t1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
-                    android:text="R" />
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="#49454F"
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
             <!--Linear layout to display Python-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="5dp">
 
@@ -182,17 +193,20 @@
 
                 <!--Text view to display python text -->
                 <TextView
+                    android:id="@+id/t2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="#49454F"
                     android:paddingLeft="10dp"
-                    android:text="Python" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
             <!--Linear layout to display C++-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="5dp">
 
@@ -204,17 +218,21 @@
 
                 <!--Text view to display C++ text -->
                 <TextView
+                    android:id="@+id/t3"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="#49454F"
                     android:paddingLeft="10dp"
-                    android:text="C++" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
             <!--Linear layout to display Java-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="5dp">
 
@@ -226,10 +244,14 @@
 
                 <!--Text view to display Java text -->
                 <TextView
+                    android:id="@+id/t4"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
-                    android:text="Java" />
+                    android:fontFamily="@font/montserrat_medium"
+                    android:textColor="#49454F"
+                    android:textSize="20sp" />
 
             </LinearLayout>
 

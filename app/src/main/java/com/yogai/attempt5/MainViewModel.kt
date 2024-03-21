@@ -23,18 +23,23 @@ import androidx.lifecycle.ViewModel
 class MainViewModel : ViewModel() {
 
     public val poseList: MutableList<Pose> = mutableListOf()
+    public val poseListPerformed: MutableList<Pose> = mutableListOf()
 
     init {
         // Initialize your poseList with Pose objects
-        poseList.add(Pose(R.drawable.lotus, "Lotus"))
+        poseList.add(Pose(R.drawable.tree_detail, "Tree"))
         poseList.add(Pose(R.drawable.cobra, "Cobra"))
         poseList.add(Pose(R.drawable.camel, "Camel"))
         poseList.add(Pose(R.drawable.triangle, "Extended Triangle"))
+        poseListPerformed.add(Pose(R.drawable.tree_detail, "Tree"))
         // Add more poses as needed
     }
 
     fun getPoses(): List<Pose> {
         return poseList
+    }
+    fun getPosesPerformed(): List<Pose> {
+        return poseListPerformed
     }
 
     private var _model = PoseLandmarkerHelper.MODEL_POSE_LANDMARKER_FULL
@@ -49,6 +54,13 @@ class MainViewModel : ViewModel() {
     private var _selectedPoseId: Int = 0
     private var _selectedPoseName: String? = null
     private var _isHandUp: Boolean = false
+    private var _poseDuration: String = "0"
+
+
+
+    private var _accuracy: Double = 0.0
+
+    val currentAccuracy: Double get() = _accuracy
     val currentDelegate: Int get() = _delegate
     val currentModel: Int get() = _model
     val currentMinPoseDetectionConfidence: Float
@@ -69,10 +81,21 @@ class MainViewModel : ViewModel() {
         get()
         =_isHandUp
 
+    val poseDuration: String
+        get()
+        =_poseDuration
+
 //    val selectedPoseName: String?
 //        get() = _selectedPoseName
     fun setSelectedPoseName(poseName: String) {
         _selectedPoseName = poseName
+    }
+    fun setAccuracy(accuracy: Double){
+        _accuracy = accuracy
+    }
+
+    fun getAccuracy(): Double {
+        return _accuracy
     }
 
     fun getSelectedPoseId(): Int {
@@ -85,6 +108,10 @@ class MainViewModel : ViewModel() {
 
     fun setSelectedPoseId(id: Int) {
         _selectedPoseId = id
+    }
+
+    fun setPoseDuration(duration: String){
+        _poseDuration = duration
     }
 
     fun setDelegate(delegate: Int) {

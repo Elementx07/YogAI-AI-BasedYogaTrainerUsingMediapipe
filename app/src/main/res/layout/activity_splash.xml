@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EF6C00"
+    android:background="#EDC9B7"
     tools:context=".SplashActivity">
 
     <ImageView
@@ -34,7 +34,7 @@
         android:layout_marginEnd="100dp"
         android:layout_marginBottom="77dp"
         android:text="YogAI"
-        android:textColor="@android:color/white"
+        android:textColor="#965656"
         android:textSize="60sp" />
 
     <TextView
@@ -49,6 +49,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="138dp"
+        android:textColor="#C17272"
         android:text="AI powered Yoga Trainer"
         android:textAlignment="center"
         android:textSize="30sp" />

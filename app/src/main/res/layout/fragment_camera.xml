@@ -4,22 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CameraFragment">
-
-    <!-- TODO: Update blank fragment layout -->
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-         />
-
+        android:layout_height="match_parent" />
     <com.yogai.attempt5.OverlayView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/overlay" />
-
     <com.yogai.attempt5.TextOverlay
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/text"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="End Session"
+        android:layout_marginTop="620dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/idEndSession" />
+
+
+<!--    <androidx.fragment.app.FragmentContainerView-->
+<!--        android:id="@+id/accuracyFragment"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:name="com.yogai.attempt5.AccuracyFragment"/>-->
+
+
 
 </FrameLayout>
