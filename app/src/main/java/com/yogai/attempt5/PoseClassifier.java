@@ -150,28 +150,6 @@ public class PoseClassifier {
         if (visibleHand > 0.5 && session ) {
             boolean previousState = viewModel.isHandUp();
             boolean currentState = (shoulderAngle > 180 && elbowAngle < 340 && elbowAngle > 285 && shoulderAngle < 230);
-//            Log.d(TAG, "Previous State: " + previousState + ", Current State: " + currentState);
-//            if (currentState != previousState) {
-//                if (currentState) {
-//                    if (stage1) {
-//                        t1.speak("Your pose is complete. Hold this position as long as possible.", TextToSpeech.QUEUE_ADD, null);
-//                        poseComplete = true;
-//                        startTimer();
-//                    }
-//                    t1.speak("Your hand is up.", TextToSpeech.QUEUE_ADD, null);
-//                    stage2 = true;
-//                    viewModel.setHandUp(true);
-//                } else {
-//                    t1.speak("Your hand is down.", TextToSpeech.QUEUE_FLUSH, null);
-//                    Log.d(TAG, "Hand down");
-//                    viewModel.setHandUp(false);
-//                    stopTimer();
-//                    resetTimer();
-//                    stage2 = false;
-//                    flag2=false;
-//                    poseComplete = false;
-//                }
-//            }
             if(currentState && !flag3 && stage1 && !stage2) {
                 t1.speak("Your pose is complete. Hold this position as long as possible.", TextToSpeech.QUEUE_ADD, null);
                 startTimer();

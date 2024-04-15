@@ -47,7 +47,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        pc = view.findViewById(R.id.piechart); // Find the PieChart within the inflated layout
+        pc = view.findViewById(R.id.piechart);
         t1=view.findViewById(R.id.t1);
         t2=view.findViewById(R.id.t2);
         t3=view.findViewById(R.id.t3);
@@ -74,8 +74,8 @@ public class HomeFragment extends Fragment {
             }
             return true;
         });
-        //Animate msg text in type writer effect
         mainActivity.typeWriter(msg);
+
         t1.setText("Tree");
         t2.setText("Cobra");
         t3.setText("Camel");
@@ -96,7 +96,6 @@ public class HomeFragment extends Fragment {
     public void anime(){
 
     }
-
     private Runnable longPressRunnable=()->{
         if(!mLongPressed){
             mLongPressed=true;

@@ -62,7 +62,7 @@ public class PoseInfoFragment extends Fragment {
         else if(pi.equals("Extended Triangle")){
             poseImage.setImageResource(R.drawable.triangle);
         } else if (pi.equals("Tree")){
-            poseImage.setImageResource(R.drawable.tree);
+            poseImage.setImageResource(R.drawable.tree_detail);
         }
 
 

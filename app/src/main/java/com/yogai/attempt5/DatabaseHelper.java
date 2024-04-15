@@ -14,7 +14,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_POSE_TABLE = "CREATE TABLE Pose (" +
@@ -23,7 +22,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "pose_details TEXT," +
                 "benefits TEXT" +
                 ")";
-
         String CREATE_PROGRESS_TABLE = "CREATE TABLE Progress (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "pose_id INTEGER," +
@@ -38,7 +36,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_POSE_TABLE);
         db.execSQL(CREATE_PROGRESS_TABLE);
     }
-
     public void addPoseDuration(int poseId, int poseDuration) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -78,6 +75,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS Progress");
         onCreate(db);
     }
-
-
 }

@@ -1,28 +1,24 @@
 package com.yogai.attempt5;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+
 import android.annotation.SuppressLint;
+
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.yogai.attempt5.databinding.ActivityMainBinding;
 
 import org.eazegraph.lib.charts.PieChart;
-import org.eazegraph.lib.models.PieModel;
 
 public class MainActivity extends AppCompatActivity   {
     BottomNavigationView nv;
@@ -53,8 +49,6 @@ public class MainActivity extends AppCompatActivity   {
                 return false;
             }
         });
-
-
     }
 
     private void createNotificationChannel() {
@@ -80,7 +74,7 @@ public class MainActivity extends AppCompatActivity   {
         } else if (direction == -1) {
            // transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
         }
-        transaction.replace(R.id.fragment_container, fragment);
+        ((FragmentTransaction) transaction).replace(R.id.fragment_container, fragment);
         transaction.commit();
     }
 
