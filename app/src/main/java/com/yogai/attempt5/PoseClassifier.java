@@ -101,25 +101,17 @@ public class PoseClassifier {
             switch (selectedPose) {
                 case "Tree":
                     tree(results);
+                    break;
                 case "Cobra":
-                    downwarddog();
+                    triangle();
+                    break;
+                case "Warrior":
+                    warrior();
+                    break;
                 default:
                     return 0;
             }
         }
-        return 0;
-    }
-
-
-    private int plank() {
-        return 0;
-    }
-
-    private int cobra() {
-        return 0;
-    }
-
-    private int downwarddog() {
         return 0;
     }
 
@@ -184,10 +176,106 @@ public class PoseClassifier {
     }
 
     private int triangle() {
+        //TODO: Implement triangle pose
+        PointF leftAnkle = getLandmarkPosition(results, 27);
+        PointF leftKnee = getLandmarkPosition(results, 25);
+        PointF leftHip = getLandmarkPosition(results, 23);
+        PointF rightAnkle = getLandmarkPosition(results, 28);
+        PointF rightKnee = getLandmarkPosition(results, 26);
+        PointF rightHip = getLandmarkPosition(results, 24);
+        PointF leftShoulder = getLandmarkPosition(results, 15);
+
+        Double leftKneeAngle = calculateAngle(leftAnkle, leftKnee, leftHip);
+        Double rightKneeAngle = calculateAngle(rightAnkle, rightKnee, rightHip);
+        Double leftHipAngle = calculateAngle(leftKnee, leftHip, leftShoulder);
+
+        if(!session) {
+            t1.speak("Start by standing with your feet apart, about 3-4 feet. Turn your right foot out 90 degrees and your left foot in about 15 degrees. Align your right heel with your left heel. Raise your arms parallel to the floor and reach them actively out to the sides, shoulder blades wide, palms down.", TextToSpeech.QUEUE_ADD, null);
+            session = true;
+        } else if (session && !stage1 && !flag1) {
+            t1.speak("Now, bend your right knee over your right ankle, so that your shin is perpendicular to the floor. Stretch your left arm toward the ceiling, and bring your right hand to the floor.", TextToSpeech.QUEUE_ADD, null);
+            flag1 = true;
+        } else if (session && stage1 && !stage2 && !flag2) {
+            t1.speak("Now, straighten your right leg and turn your left foot out to the left 90 degrees. Align your left heel with your right heel. Stretch your right arm toward the ceiling, and bring your left hand to the floor.", TextToSpeech.QUEUE_ADD, null);
+            flag2 = true;
+        }
+
+        if (leftKneeAngle > 160 && leftKneeAngle < 200 && rightKneeAngle > 160 && rightKneeAngle < 200 && leftHipAngle > 160 && leftHipAngle < 200) {
+            t1.speak("Your pose is complete. Hold this position as long as possible.", TextToSpeech.QUEUE_FLUSH, null);
+            startTimer();
+            poseComplete = true;
+
+        }
+        if(leftKneeAngle > 160 && leftKneeAngle < 200 && rightKneeAngle > 160 && rightKneeAngle < 200 && leftHipAngle < 160 && leftHipAngle > 200) {
+            t1.speak("Your left hip is not aligned with your left knee. Please try again.", TextToSpeech.QUEUE_FLUSH, null);
+            stage1 = stage2 = false;
+            flag1 = flag2 = flag3 = false;
+            poseComplete = false;
+            stopTimer();
+            resetTimer();
+        }
+        if(leftKneeAngle < 160 && leftKneeAngle > 200 && rightKneeAngle < 160 && rightKneeAngle > 200 && leftHipAngle < 160 && leftHipAngle > 200) {
+            t1.speak("Your pose is incorrect. Please try again.", TextToSpeech.QUEUE_FLUSH, null);
+            stage1 = stage2 = false;
+            flag1 = flag2 = flag3 = false;
+            poseComplete = false;
+            stopTimer();
+            resetTimer();
+        }
         return 0;
     }
 
-    private int warrior1() {
+    private int warrior() {
+        //TODO: Implement warrior 1 pose
+        PointF leftAnkle = getLandmarkPosition(results, 27);
+        PointF leftKnee = getLandmarkPosition(results, 25);
+        PointF leftHip = getLandmarkPosition(results, 23);
+        PointF rightAnkle = getLandmarkPosition(results, 28);
+        PointF rightKnee = getLandmarkPosition(results, 26);
+        PointF rightHip = getLandmarkPosition(results, 24);
+        PointF leftShoulder = getLandmarkPosition(results, 15);
+
+        Double leftKneeAngle = calculateAngle(leftAnkle, leftKnee, leftHip);
+        Double rightKneeAngle = calculateAngle(rightAnkle, rightKnee, rightHip);
+        Double leftHipAngle = calculateAngle(leftKnee, leftHip, leftShoulder);
+
+        if(!session) {
+            t1.speak("Start by standing with your feet apart, about 3-4 feet. Turn your right foot out 90 degrees and your left foot in about 15 degrees. Align your right heel with your left heel. Raise your arms parallel to the floor and reach them actively out to the sides, shoulder blades wide, palms down.", TextToSpeech.QUEUE_ADD, null);
+            session = true;
+        } else if (session && !stage1 && !flag1) {
+            t1.speak("Now, bend your right knee over your right ankle, so that your shin is perpendicular to the floor. Stretch your left arm toward the ceiling, and bring your right hand to the floor.", TextToSpeech.QUEUE_ADD, null);
+            flag1 = true;
+        } else if (session && stage1 && !stage2 && !flag2) {
+            t1.speak("Now, straighten your right leg and turn your left foot out to the left 90 degrees. Align your left heel with your right heel. Stretch your right arm toward the ceiling, and bring your left hand to the floor.", TextToSpeech.QUEUE_ADD, null);
+            flag2 = true;
+        }
+
+        if (leftKneeAngle > 160 && leftKneeAngle < 200 && rightKneeAngle > 160 && rightKneeAngle < 200 && leftHipAngle > 160 && leftHipAngle < 200) {
+            t1.speak("Your pose is complete. Hold this position as long as possible.", TextToSpeech.QUEUE_FLUSH, null);
+            startTimer();
+            poseComplete = true;
+
+        }
+        if(leftKneeAngle > 160 && leftKneeAngle < 200 && rightKneeAngle > 160 && rightKneeAngle < 200 && leftHipAngle < 160 && leftHipAngle > 200) {
+            t1.speak("Your left hip is not aligned with your left knee. Please try again.", TextToSpeech.QUEUE_FLUSH, null);
+            stage1 = stage2 = false;
+            flag1 = flag2 = flag3 = false;
+            poseComplete = false;
+            stopTimer();
+            resetTimer();
+        }
+        return 0;
+    }
+
+    private int plank() {
+        return 0;
+    }
+
+    private int cobra() {
+        return 0;
+    }
+
+    private int downwarddog() {
         return 0;
     }
 

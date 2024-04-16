@@ -53,7 +53,7 @@ class CameraFragment() : androidx.fragment.app.Fragment(), PoseLandmarkerHelper.
     private var progress: ProgressBar? = null
     private lateinit var main: MainActivity
     private lateinit var pc: PoseClassifier
-    /** Blocking ML operations are performed using this executor */
+    // Blocking ML operations are performed using this executor
     private lateinit var backgroundExecutor: ExecutorService
 
     override fun onResume() {
@@ -101,7 +101,7 @@ class CameraFragment() : androidx.fragment.app.Fragment(), PoseLandmarkerHelper.
         endSession?.setOnClickListener {
             Log.d(null,"end session")
             pc.stopTTS()
-            main.replaceFragment(ProgressFragment(context,main),0)
+            main.replaceFragment(ProgressFragment(context,main))
         }
         return fragmentCameraBinding.root
     }
@@ -147,7 +147,6 @@ class CameraFragment() : androidx.fragment.app.Fragment(), PoseLandmarkerHelper.
         )
     }
 
-    // Declare and bind preview, capture and analysis use cases
     @SuppressLint("UnsafeOptInUsageError")
     private fun bindCameraUseCases() {
         // CameraProvider

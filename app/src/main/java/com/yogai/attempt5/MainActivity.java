@@ -30,20 +30,20 @@ public class MainActivity extends AppCompatActivity   {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        replaceFragment(new HomeFragment(MainActivity.this),0);
+        replaceFragment(new HomeFragment(MainActivity.this));
         MainViewModel mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         createNotificationChannel();
         binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.home) {
-                    replaceFragment(new HomeFragment(MainActivity.this),-1);
+                    replaceFragment(new HomeFragment(MainActivity.this));
                     return true;
                 } else if (item.getItemId() == R.id.poses) {
-                    replaceFragment(new PoseSelectorFragment(MainActivity.this, MainActivity.this),1);
+                    replaceFragment(new PoseSelectorFragment(MainActivity.this, MainActivity.this));
                     return true;
                 } else if (item.getItemId()==R.id.progress) {
-                    replaceFragment(new ProgressFragment(MainActivity.this,MainActivity.this),0);
+                    replaceFragment(new ProgressFragment(MainActivity.this,MainActivity.this));
                     return true;
                 }
                 return false;
@@ -67,13 +67,8 @@ public class MainActivity extends AppCompatActivity   {
         return new ViewModelProvider(this).get(MainViewModel.class);
     }
 
-    public void replaceFragment(Fragment fragment, int direction) {
+    public void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (direction == 1) {
-            //transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        } else if (direction == -1) {
-           // transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
-        }
         ((FragmentTransaction) transaction).replace(R.id.fragment_container, fragment);
         transaction.commit();
     }
